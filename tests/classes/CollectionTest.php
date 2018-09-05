@@ -14,7 +14,10 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection;
         $label = LabelTest::getLabel();
-        $collection->add($label, $label->getParent());
+        $collection->add(
+            $label,
+            new Label('Tests 2', 'teste-2', Status::ACTIVE())
+        );
 
         $this->assertEquals(2, $collection->count());
         $this->assertEquals(LabelTest::ID, $collection->getById(LabelTest::ID)->getId());

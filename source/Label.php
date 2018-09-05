@@ -5,25 +5,27 @@ namespace Ciebit\Labels;
 
 class Label
 {
+    private $ascendantsId; #: array<string>
     private $id; #string
     private $title; #string
-    private $parent; #?Label
     private $uri; #string
     private $status; #Status
 
-    public function __construct
-    (
+    public function __construct (
         string $title,
         string $uri,
-        ?Label $parent,
         Status $status
-    )
-    {
+    ) {
+        $this->ascendantsId = [];
         $this->id = '';
         $this->title = $title;
         $this->uri = $uri;
-        $this->parent = $parent;
         $this->status = $status;
+    }
+
+    public function getAscendantsId(): array
+    {
+        return $this->ascendantsId;
     }
 
     public function getId(): string
@@ -41,14 +43,20 @@ class Label
         return $this->uri;
     }
 
-    public function getParent(): ?Label
+    public function getParentId(): string
     {
-        return $this->parent;
+        return (string) end($this->ascendantsId);
     }
 
     public function getStatus(): Status
     {
         return $this->status;
+    }
+
+    public function setAscendantsId(array $ids): self
+    {
+        $this->ascendantsId = $ids;
+        return $this;
     }
 
     public function setId(string $id): self

@@ -9,28 +9,18 @@ class LabelTest extends TestCase
 {
     const ID = '2';
     const PARENT_ID = '1';
-    const PARENT_STATUS = 4;
-    const PARENT_TITLE = 'Title Parent Example';
-    const PARENT_URI = 'title-parent-example';
     const STATUS = 3;
     const TITLE = 'Title Example';
     const URI = 'title-example';
 
     static function getLabel(): Label
     {
-        $parent = (new Label(
-            self::PARENT_TITLE,
-            self::PARENT_URI,
-            null,
-            new Status(self::PARENT_STATUS)
-        ))->setId(self::PARENT_ID);
-
         return (new Label(
             self::TITLE,
             self::URI,
-            $parent,
             new Status(self::STATUS)
-        ))->setId(self::ID);
+        ))->setId(self::ID)
+        ->setAscendantsId([1]);
     }
 
     public function testCreateFromManual(): void
@@ -41,9 +31,6 @@ class LabelTest extends TestCase
         $this->assertEquals(self::TITLE, $label->getTitle());
         $this->assertEquals(self::URI, $label->getUri());
         $this->assertEquals(self::STATUS, $label->getStatus()->getValue());
-        $this->assertEquals(self::PARENT_ID, $label->getParent()->getId());
-        $this->assertEquals(self::PARENT_TITLE, $label->getParent()->getTitle());
-        $this->assertEquals(self::PARENT_URI, $label->getParent()->getUri());
-        $this->assertEquals(self::PARENT_STATUS, $label->getParent()->getStatus()->getValue());
+        $this->assertEquals(self::PARENT_ID, $label->getParentId());
     }
 }
