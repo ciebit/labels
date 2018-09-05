@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
+
 namespace Ciebit\Labels;
 
 class Label
 {
-    private $id; #int
+    private $id; #string
     private $title; #string
     private $parent; #?Label
     private $uri; #string
@@ -18,10 +19,16 @@ class Label
         Status $status
     )
     {
+        $this->id = '';
         $this->title = $title;
         $this->uri = $uri;
         $this->parent = $parent;
         $this->status = $status;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function getTitle(): string
@@ -42,5 +49,11 @@ class Label
     public function getStatus(): Status
     {
         return $this->status;
+    }
+
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 }
