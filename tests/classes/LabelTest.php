@@ -16,25 +16,26 @@ class LabelTest extends TestCase
     const TITLE = 'Title Example';
     const URI = 'title-example';
 
-    public function testCreateFromManual()
+    static function getLabel(): Label
     {
-        $parent = (
-            new Label(
-                self::PARENT_TITLE,
-                self::PARENT_URI,
-                null,
-                new Status(self::PARENT_STATUS)
-            )
-        )->setId(self::PARENT_ID);
+        $parent = (new Label(
+            self::PARENT_TITLE,
+            self::PARENT_URI,
+            null,
+            new Status(self::PARENT_STATUS)
+        ))->setId(self::PARENT_ID);
 
-        $label = (
-            new Label(
-                self::TITLE,
-                self::URI,
-                $parent,
-                new Status(self::STATUS)
-            )
-        )->setId(self::ID);
+        return (new Label(
+            self::TITLE,
+            self::URI,
+            $parent,
+            new Status(self::STATUS)
+        ))->setId(self::ID);
+    }
+
+    public function testCreateFromManual(): void
+    {
+        $label = self::getLabel();
 
         $this->assertEquals(self::ID, $label->getId());
         $this->assertEquals(self::TITLE, $label->getTitle());
