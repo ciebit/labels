@@ -14,6 +14,7 @@ use PDO;
 
 class Sql extends SqlFilters implements Storage
 {
+    static private $counterKey = 0;
     private $pdo; #: PDO
     private $table; #: string
 
@@ -29,6 +30,21 @@ class Sql extends SqlFilters implements Storage
         $sql = "`label`.`id` $operator :{$key}";
 
         $this->addfilter($key, $sql, PDO::PARAM_INT, $id);
+        return $this;
+    }
+
+    public function addFilterByIds(string $operator = '=', int ...$ids): Storage
+    {
+        $keyPrefix = 'id';
+        $keys = [];
+        $operator = $operator == '!=' ? 'NOT IN' : 'IN';
+        foreach ($ids as $id) {
+            $key = $keyPrefix . self::$counterKey++;
+            $this->addBind($key, PDO::PARAM_INT, $id);
+            $keys[] = $key;
+        }
+        $keysStr = implode(', :', $keys);
+        $this->addSqlFilter("`label`.`id` {$operator} (:{$keysStr})");
         return $this;
     }
 
@@ -49,6 +65,23 @@ class Sql extends SqlFilters implements Storage
         $this->addfilter($key, $sql, PDO::PARAM_STR, $title);
 
         return $this;
+    }
+
+    private function build(array $data): Label
+    {
+        $label = new Label(
+            $data['title'],
+            $data['uri'],
+            new Status((int) $data['status'])
+        );
+
+        $label->setId($data['id']);
+
+        if ($data['ascendants_id'] != null) {
+            $label->setAscendantsId(explode(',', $data['ascendants_id']));
+        }
+
+        return $label;
     }
 
     public function get(): ?Label
@@ -73,19 +106,7 @@ class Sql extends SqlFilters implements Storage
             return null;
         }
 
-        if ($labelData['parent']) {
-            $parents = explode(",", $labelData['parent']);
-            foreach ($parents as $parent_id) {
-                $database = clone $this;
-                $database->addFilterById((int) $parent_id);
-                $parent = $database->get();
-                // var_dump($parent);
-                $labelData['parent'] = $parent;
-            }
-        }
-        var_dump($labelData);
-
-        return (new BuilderFromArray)->setData($labelData)->build();
+        return $this->build($labelData);
     }
 
     public function getAll(): Collection
@@ -106,10 +127,9 @@ class Sql extends SqlFilters implements Storage
 
         $collection = new Collection;
 
-        $builder = new BuilderFromArray;
         while ($label = $statement->fetch(PDO::FETCH_ASSOC)) {
             $collection->add(
-                $builder->setData($label)->build()
+                $this->build($label)
             );
         }
 
@@ -121,7 +141,7 @@ class Sql extends SqlFilters implements Storage
         return '
             `label`.`id`,
             `label`.`title`,
-            `label`.`parent`,
+            `label`.`ascendants_id`,
             `label`.`uri`,
             `label`.`status`
         ';
@@ -132,7 +152,7 @@ class Sql extends SqlFilters implements Storage
         return $this->pdo->query('SELECT FOUND_ROWS()')->fetchColumn();
     }
 
-    public function setStartingLine(int $lineInit): Storage
+    public function setStarting(int $lineInit): Storage
     {
         parent::setOffset($lineInit);
         return $this;
@@ -144,7 +164,7 @@ class Sql extends SqlFilters implements Storage
         return $this;
     }
 
-    public function setTotalLines(int $total): Storage
+    public function setTotal(int $total): Storage
     {
         parent::setLimit($total);
         return $this;

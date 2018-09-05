@@ -50,7 +50,7 @@ class DatabaseSqlTest extends Connection
         $this->database = new DatabaseSql($this->getPdo());
         $labels = $this->database->getAll();
         $this->assertInstanceOf(Collection::class, $labels);
-        $this->assertCount(4, $labels->getIterator());
+        $this->assertCount(6, $labels->getIterator());
     }
 
     public function testGetAllFilterByStatus(): void
@@ -58,7 +58,7 @@ class DatabaseSqlTest extends Connection
         $this->database = new DatabaseSql($this->getPdo());
         $this->database->addFilterByStatus(Status::ACTIVE());
         $labels = $this->database->getAll();
-        $this->assertCount(1, $labels->getIterator());
+        $this->assertCount(2, $labels);
         $this->assertEquals(Status::ACTIVE(), $labels->getArrayObject()->offsetGet(0)->getStatus());
     }
 

@@ -4,8 +4,10 @@ namespace Ciebit\Labels;
 
 use ArrayIterator;
 use ArrayObject;
+use Countable;
+use IteratorAggregate;
 
-class Collection
+class Collection implements Countable, IteratorAggregate
 {
     private $labels; #: ArrayObject
 
@@ -14,13 +16,20 @@ class Collection
         $this->labels = new ArrayObject;
     }
 
-    public function add(Label $label): self
+    public function add(Label ...$labels): self
     {
-        $this->labels->append($label);
+        foreach ($labels as $label) {
+            $this->labels->append($label);
+        }
         return $this;
     }
 
-    public function getById(int $id): ?File
+    public function count(): int
+    {
+        return $this->labels->count();
+    }
+
+    public function getById(int $id): ?Label
     {
         $iterator = $this->getIterator();
         foreach ($iterator as $label) {
