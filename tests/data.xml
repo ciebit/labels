@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<dataset>
+    <table name="cb_labels">
+        <column>id</column>
+        <column>title</column>
+        <column>parent</column>
+        <column>uri</column>
+        <column>status</column>
+        <row>
+            <value>1</value>
+            <value>Legislação</value>
+            <value>0</value>
+            <value>legislacao</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>Decreto</value>
+            <value>1</value>
+            <value>decreto</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>Projeto de lei</value>
+            <value>1</value>
+            <value>projeto-de-lei</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>4</value>
+            <value>RREO</value>
+            <value>0</value>
+            <value>rreo</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>5</value>
+            <value>RGF</value>
+            <value>0</value>
+            <value>rgf</value>
+            <value>1</value>
+        </row>
+    </table>
+</dataset>
