@@ -1,0 +1,43 @@
+{
+    "name": "ciebit/labels",
+    "description": "Módulo de gerenciamento de marcadores",
+    "keywords": ["labels", "marcadores"],
+    "type": "library",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/ciebit/labels/issues",
+        "source": "https://github.com/ciebit/labels"
+    },
+    "authors": [
+        {
+            "name": "Johnny Saymon",
+            "email": "saymon@ciebit.com",
+            "homepage": "http://saymon.ciebit.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Maike Negreiros",
+            "email": "maike_jbe@hotmail.com",
+            "homepage": "http://maikenegreiros.me",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4":{
+            "Ciebit\\Labels\\": "source/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4":{
+            "Ciebit\\Labels\\Tests\\": "tests/classes/"
+        }
+    },
+    "require": {
+        "php": "^7.1",
+        "myclabs/php-enum": "^1.6.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4",
+        "phpunit/dbunit": "^3.0"
+    }
+}
