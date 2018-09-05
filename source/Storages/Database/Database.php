@@ -7,7 +7,4 @@ use Ciebit\Labels\Storages\Storage;
 
 interface Database extends Storage
 {
-    public function get(): ?Label;
-
-    public function getAll(): Collection;
 }

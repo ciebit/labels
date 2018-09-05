@@ -11,6 +11,8 @@ interface Storage
 {
     public function addFilterById(int $id, string $operator = '='): self;
 
+    public function addFilterByIds(string $operator, int ...$id): self;
+
     public function addFilterByStatus(Status $status, string $operator = '='): self;
 
     public function addFilterByTitle(string $title, string $operator = '='): self;
@@ -19,7 +21,7 @@ interface Storage
 
     public function getAll(): Collection;
 
-    public function setStartingLine(int $lineInit): self;
+    public function setStarting(int $lineInit): self;
 
-    public function setTotalLines(int $total): self;
+    public function setTotal(int $total): self;
 }
