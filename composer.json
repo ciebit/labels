@@ -29,12 +29,11 @@
     },
     "autoload-dev": {
         "psr-4":{
-            "Ciebit\\Labels\\Tests\\": "tests/"
+            "Ciebit\\Labels\\Tests\\": "tests/classes/"
         }
     },
     "require": {
         "php": "^7.1",
-        "aws/aws-sdk-php": "^3.52",
         "myclabs/php-enum": "^1.6.2"
     },
     "require-dev": {

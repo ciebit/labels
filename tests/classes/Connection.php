@@ -19,7 +19,7 @@ abstract class Connection extends TestCase
             return $this->settings;
         }
 
-        $this->settings = parse_ini_file(__DIR__.'/settings.ini', true);
+        $this->settings = parse_ini_file(__DIR__.'/../settings.ini', true);
 
         return $this->settings;
     }
@@ -50,6 +50,6 @@ abstract class Connection extends TestCase
 
     public function getDataSet()
     {
-        return $this->createXMLDataSet(__DIR__.'/data.xml');
+        return $this->createXMLDataSet(__DIR__.'/../data.xml');
     }
 }

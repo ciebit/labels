@@ -6,7 +6,7 @@
 >
     <testsuites>
         <testsuite name="Ciebit Labels Tests">
-            <directory>./tests/</directory>
+            <directory>./tests/classes/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
