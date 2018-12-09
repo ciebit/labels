@@ -67,6 +67,15 @@ class Sql extends SqlFilters implements Storage
         return $this;
     }
 
+    public function addFilterByUri(string $uri, string $operator = '='): Storage
+    {
+        $key = 'uri';
+        $sql = "`label`.`uri` $operator :{$key}";
+
+        $this->addfilter($key, $sql, PDO::PARAM_STR, $uri);
+        return $this;
+    }
+
     private function build(array $data): Label
     {
         $label = new Label(

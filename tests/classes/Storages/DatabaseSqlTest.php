@@ -45,6 +45,15 @@ class DatabaseSqlTest extends Connection
         $this->assertEquals(4, $labelsArray->offsetGet(2)->getId());
     }
 
+    public function testGetFilterByUri(): void
+    {
+        $uri = 'relatorios';
+        $this->database = new DatabaseSql($this->getPdo());
+        $this->database->addFilterByUri($uri.'');
+        $label = $this->database->get();
+        $this->assertEquals($uri, $label->getUri());
+    }
+
     public function testGetAll(): void
     {
         $this->database = new DatabaseSql($this->getPdo());
