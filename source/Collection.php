@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace Ciebit\Labels;
 
 use ArrayIterator;
@@ -9,7 +8,8 @@ use IteratorAggregate;
 
 class Collection implements Countable, IteratorAggregate
 {
-    private $labels; #: ArrayObject
+    /** @var ArrayObject */
+    private $labels;
 
     public function __construct()
     {
@@ -29,6 +29,11 @@ class Collection implements Countable, IteratorAggregate
         return $this->labels->count();
     }
 
+    public function getArrayObject(): ArrayObject
+    {
+        return clone $this->labels;
+    }
+
     public function getById(int $id): ?Label
     {
         $iterator = $this->getIterator();
@@ -38,11 +43,6 @@ class Collection implements Countable, IteratorAggregate
             }
         }
         return null;
-    }
-
-    public function getArrayObject(): ArrayObject
-    {
-        return clone $this->labels;
     }
 
     public function getIterator(): ArrayIterator

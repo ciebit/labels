@@ -1,25 +1,38 @@
 <?php
-declare(strict_types=1);
-
 namespace Ciebit\Labels;
+
+use Ciebit\Labels\Status;
+
+use function array_map;
+use function end;
+use function strval;
 
 class Label
 {
-    private $ascendantsId; #: array<string>
-    private $id; #string
-    private $title; #string
-    private $uri; #string
-    private $status; #Status
+    /** @var array <string> */
+    private $ascendantsId;
+
+    /** @var string */
+    private $id;
+
+    /** @var string */
+    private $slug;
+
+    /** @var string */
+    private $title;
+
+    /** @var Status */
+    private $status;
 
     public function __construct (
         string $title,
-        string $uri,
+        string $slug,
         Status $status
     ) {
         $this->ascendantsId = [];
         $this->id = '';
         $this->title = $title;
-        $this->uri = $uri;
+        $this->slug = $slug;
         $this->status = $status;
     }
 
@@ -33,19 +46,19 @@ class Label
         return $this->id;
     }
 
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function getUri(): string
-    {
-        return $this->uri;
-    }
-
     public function getParentId(): string
     {
-        return (string) end($this->ascendantsId);
+        return end($this->ascendantsId);
     }
 
     public function getStatus(): Status
@@ -55,6 +68,7 @@ class Label
 
     public function setAscendantsId(array $ids): self
     {
+        $ids = array_map('strval', $ids);
         $this->ascendantsId = $ids;
         return $this;
     }
