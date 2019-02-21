@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Ciebit\Labels\Storages;
 
 use Ciebit\Labels\Collection;
@@ -9,19 +7,23 @@ use Ciebit\Labels\Status;
 
 interface Storage
 {
-    public function addFilterById(int $id, string $operator = '='): self;
+    public function addFilterByAscendantId(string $operator, string ...$id): self;
 
-    public function addFilterByIds(string $operator, int ...$id): self;
+    public function addFilterById(string $operator, string ...$id): self;
 
-    public function addFilterByStatus(Status $status, string $operator = '='): self;
+    public function addFilterBySlug(string $operator, string ...$slug): self;
 
-    public function addFilterByTitle(string $title, string $operator = '='): self;
+    public function addFilterByStatus(string $operator, Status ...$status): self;
 
-    public function get(): ?Label;
+    public function addFilterByTitle(string $operator, string ...$title): self;
 
-    public function getAll(): Collection;
+    public function getTotalItemsOfLastFindWithoutFilters(): int;
 
-    public function setStarting(int $lineInit): self;
+    public function findAll(): Collection;
 
-    public function setTotal(int $total): self;
+    public function findOne(): ?Label;
+
+    public function setLimit(int $limit): self;
+
+    public function setOffset(int $offset): self;
 }
