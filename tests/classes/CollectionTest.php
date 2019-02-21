@@ -6,6 +6,7 @@ use ArrayObject;
 use Ciebit\Labels\Collection;
 use Ciebit\Labels\Label;
 use Ciebit\Labels\Status;
+use Ciebit\Labels\Tests\LabelTest;
 use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
@@ -19,7 +20,7 @@ class CollectionTest extends TestCase
             new Label('Tests 2', 'teste-2', Status::ACTIVE())
         );
 
-        $this->assertEquals(2, $collection->count());
+        $this->assertCount(2, $collection);
         $this->assertEquals(LabelTest::ID, $collection->getById(LabelTest::ID)->getId());
         $this->assertInstanceOf(ArrayIterator::class, $collection->getIterator());
         $this->assertInstanceOf(ArrayObject::class, $collection->getArrayObject());
