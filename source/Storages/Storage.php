@@ -26,4 +26,6 @@ interface Storage
     public function setLimit(int $limit): self;
 
     public function setOffset(int $offset): self;
+
+    public function store(Label $label): self;
 }

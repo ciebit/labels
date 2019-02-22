@@ -217,6 +217,36 @@ class Sql implements Database
         return $this;
     }
 
+    /** @throws Exception */
+    public function store(Label $label): Storage
+    {
+        $fieldAscendantId = self::FIELD_ASCENDANT_ID;
+        $fieldSlug = self::FIELD_SLUG;
+        $fieldTitle = self::FIELD_TITLE;
+        $fieldStatus = self::FIELD_STATUS;
+
+        $statement = $this->pdo->prepare(
+            "INSERT INTO {$this->table} (
+                `{$fieldTitle}`, `{$fieldSlug}`, `{$fieldAscendantId}`, `{$fieldStatus}`
+            ) VALUES (
+                :title, :slug, :ascendant_id, :status
+            )"
+        );
+
+        $statement->bindValue(':ascendant_id', json_encode($label->getAscendantsId()), PDO::PARAM_STR);
+        $statement->bindValue(':slug', $label->getSlug(), PDO::PARAM_STR);
+        $statement->bindValue(':title', $label->getTitle(), PDO::PARAM_STR);
+        $statement->bindValue(':status', $label->getStatus()->getValue(), PDO::PARAM_INT);
+
+        if (! $statement->execute()) {
+            throw new Exception('ciebit.labels.storages.store', 3);
+        }
+
+        $label->setId($this->pdo->lastInsertId());
+
+        return $this;
+    }
+
     private function updateTotalItemsWithoutFilters(): self
     {
         $this->totalItemsOfLastFindWithoutFilters = $this->pdo->query('SELECT FOUND_ROWS()')->fetchColumn();

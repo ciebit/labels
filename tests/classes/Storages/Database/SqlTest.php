@@ -6,6 +6,7 @@ use Ciebit\Labels\Label;
 use Ciebit\Labels\Status;
 use Ciebit\Labels\Storages\Database\Sql;
 use Ciebit\Labels\Tests\BuildPdo;
+use Ciebit\Labels\Tests\LabelTest;
 use PHPUnit\Framework\TestCase;
 
 class SqlTest extends TestCase
@@ -84,5 +85,13 @@ class SqlTest extends TestCase
         $storage->addFilterBySlug('=', $slug.'');
         $label = $storage->findOne();
         $this->assertEquals($slug, $label->getSlug());
+    }
+
+    public function testStore(): void
+    {
+        $label1 = LabelTest::getLabel()->setId('');
+        $storage = $this->getStorage()->store($label1);
+        $label2 = $storage->addFilterById('=', $label1->getId())->findOne();
+        $this->assertEquals($label1, $label2);
     }
 }
