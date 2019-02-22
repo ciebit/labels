@@ -113,6 +113,24 @@ class Sql implements Database
         return $label;
     }
 
+    /** @throws Exception */
+    public function destroy(Label $label): Storage
+    {
+        $statement = $this->pdo->prepare(
+            "DELETE FROM {$this->table} WHERE `id` = :id"
+        );
+
+        $statement->bindValue(':id', $label->getId(), PDO::PARAM_INT);
+
+        if (! $statement->execute()) {
+            throw new Exception('ciebit.label.storages.destroy', 4);
+        }
+
+        $label->setId('');
+
+        return $this;
+    }
+
     public function findAll(): Collection
     {
         $fields = implode(',', $this->getFieldsSql());

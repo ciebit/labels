@@ -16,6 +16,24 @@ class SqlTest extends TestCase
         return new Sql(BuildPdo::build());
     }
 
+    private function setDatabaseDefault(): void
+    {
+        $pdo = BuildPdo::build();
+        $pdo->query('DELETE FROM `cb_labels`');
+        $pdo->query(file_get_contents(__DIR__.'/../../../../database/data-example.sql'));
+    }
+
+    public function testDestroy(): void
+    {
+        $this->setDatabaseDefault();
+        $label = LabelTest::getLabel()->setId('1');
+        $storage = $this->getStorage();
+        $storage->destroy($label);
+        $this->assertEmpty($label->getId());
+        $label = $storage->addFilterById('=', '1')->findOne();
+        $this->assertNull($label);
+    }
+
     public function testFind(): void
     {
         $label = $this->getStorage()->findOne();
@@ -24,6 +42,7 @@ class SqlTest extends TestCase
 
     public function testFindAll(): void
     {
+        $this->setDatabaseDefault();
         $storage = $this->getStorage();
         $labels = $storage->findAll();
         $this->assertInstanceOf(Collection::class, $labels);

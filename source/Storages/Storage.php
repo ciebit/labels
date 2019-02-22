@@ -17,6 +17,8 @@ interface Storage
 
     public function addFilterByTitle(string $operator, string ...$title): self;
 
+    public function destroy(Label $label): self;
+
     public function getTotalItemsOfLastFindWithoutFilters(): int;
 
     public function findAll(): Collection;
