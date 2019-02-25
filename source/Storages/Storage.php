@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Ciebit\Labels\Storages;
 
 use Ciebit\Labels\Collection;
@@ -9,19 +7,46 @@ use Ciebit\Labels\Status;
 
 interface Storage
 {
-    public function addFilterById(int $id, string $operator = '='): self;
+    /** @var string */
+    public const FIELD_ID = 'id';
 
-    public function addFilterByIds(string $operator, int ...$id): self;
+    /** @var string */
+    public const FIELD_PARENT_ID = 'parent_id';
 
-    public function addFilterByStatus(Status $status, string $operator = '='): self;
+    /** @var string */
+    public const FIELD_SLUG = 'slug';
 
-    public function addFilterByTitle(string $title, string $operator = '='): self;
+    /** @var string */
+    public const FIELD_STATUS = 'status';
 
-    public function get(): ?Label;
+    /** @var string */
+    public const FIELD_TITLE = 'title';
 
-    public function getAll(): Collection;
+    public function addFilterById(string $operator, string ...$id): self;
 
-    public function setStarting(int $lineInit): self;
+    public function addFilterByParentId(string $operator, string ...$id): self;
 
-    public function setTotal(int $total): self;
+    public function addFilterBySlug(string $operator, string ...$slug): self;
+
+    public function addFilterByStatus(string $operator, Status ...$status): self;
+
+    public function addFilterByTitle(string $operator, string ...$title): self;
+
+    public function addOrder(string $field, string $order): self;
+
+    public function destroy(Label $label): self;
+
+    public function getTotalItemsOfLastFindWithoutLimit(): int;
+
+    public function findAll(): Collection;
+
+    public function findOne(): ?Label;
+
+    public function setLimit(int $limit): self;
+
+    public function setOffset(int $offset): self;
+
+    public function store(Label $label): self;
+
+    public function update(Label $label): self;
 }

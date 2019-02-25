@@ -1,31 +1,35 @@
 <?php
-declare(strict_types=1);
-
 namespace Ciebit\Labels;
+
+use Ciebit\Labels\Status;
 
 class Label
 {
-    private $ascendantsId; #: array<string>
-    private $id; #string
-    private $title; #string
-    private $uri; #string
-    private $status; #Status
+    /** @var string */
+    private $id;
+
+    /** @var string */
+    private $parentId;
+
+    /** @var string */
+    private $slug;
+
+    /** @var string */
+    private $title;
+
+    /** @var Status */
+    private $status;
 
     public function __construct (
         string $title,
-        string $uri,
+        string $slug,
         Status $status
     ) {
-        $this->ascendantsId = [];
         $this->id = '';
+        $this->parentId = '';
         $this->title = $title;
-        $this->uri = $uri;
+        $this->slug = $slug;
         $this->status = $status;
-    }
-
-    public function getAscendantsId(): array
-    {
-        return $this->ascendantsId;
     }
 
     public function getId(): string
@@ -33,19 +37,19 @@ class Label
         return $this->id;
     }
 
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function getUri(): string
-    {
-        return $this->uri;
-    }
-
     public function getParentId(): string
     {
-        return (string) end($this->ascendantsId);
+        return $this->parentId;
     }
 
     public function getStatus(): Status
@@ -53,15 +57,15 @@ class Label
         return $this->status;
     }
 
-    public function setAscendantsId(array $ids): self
-    {
-        $this->ascendantsId = $ids;
-        return $this;
-    }
-
     public function setId(string $id): self
     {
         $this->id = $id;
+        return $this;
+    }
+
+    public function setParentId(string $id): self
+    {
+        $this->parentId = $id;
         return $this;
     }
 }
