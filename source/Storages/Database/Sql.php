@@ -259,6 +259,39 @@ class Sql implements Database
         return $this;
     }
 
+    /** @throws Exception */
+    public function update(Label $label): Storage
+    {
+        $fieldParentId = self::FIELD_PARENT_ID;
+        $fieldId = self::FIELD_ID;
+        $fieldSlug = self::FIELD_SLUG;
+        $fieldTitle = self::FIELD_TITLE;
+        $fieldStatus = self::FIELD_STATUS;
+
+        $statement = $this->pdo->prepare(
+            "UPDATE {$this->table} SET
+                `{$fieldTitle}` = :title,
+                `{$fieldSlug}` = :slug,
+                `{$fieldParentId}` =  :parent_id,
+                `{$fieldStatus}` = :status
+            WHERE
+                `{$fieldId}` = :id
+            LIMIT 1"
+        );
+
+        $statement->bindValue(':id', $label->getId(), PDO::PARAM_INT);
+        $statement->bindValue(':parent_id', $label->getParentId(), PDO::PARAM_STR);
+        $statement->bindValue(':slug', $label->getSlug(), PDO::PARAM_STR);
+        $statement->bindValue(':title', $label->getTitle(), PDO::PARAM_STR);
+        $statement->bindValue(':status', $label->getStatus()->getValue(), PDO::PARAM_INT);
+
+        if (! $statement->execute()) {
+            throw new Exception('ciebit.labels.storages.update', 4);
+        }
+
+        return $this;
+    }
+
     private function updateTotalItemsWithoutFilters(): self
     {
         $this->totalItemsOfLastFindWithoutFilters = $this->pdo->query('SELECT FOUND_ROWS()')->fetchColumn();

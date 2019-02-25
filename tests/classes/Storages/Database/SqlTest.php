@@ -115,4 +115,12 @@ class SqlTest extends TestCase
         $label2 = $storage->addFilterById('=', $label1->getId())->findOne();
         $this->assertEquals($label1, $label2);
     }
+
+    public function testUpdate(): void
+    {
+        $label1 = LabelTest::getLabel()->setId('5');
+        $storage = $this->getStorage()->update($label1);
+        $label2 = $storage->addFilterById('=', $label1->getId())->findOne();
+        $this->assertEquals($label1, $label2);
+    }
 }

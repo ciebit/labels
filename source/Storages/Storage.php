@@ -30,4 +30,6 @@ interface Storage
     public function setOffset(int $offset): self;
 
     public function store(Label $label): self;
+
+    public function update(Label $label): self;
 }
