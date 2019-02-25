@@ -103,6 +103,19 @@ class SqlTest extends TestCase
         $this->assertEquals(5, $label->getId());
     }
 
+    public function testFindAllOrderMultiple(): void
+    {
+        $this->setDatabaseDefault();
+        $sql = $this->getStorage();
+        $labels = $sql->addOrder(Storage::FIELD_PARENT_ID, 'ASC')
+        ->addOrder(Storage::FIELD_TITLE, 'DESC')
+        ->findAll();
+        $label1 = $labels->getArrayObject()->offsetGet(0);
+        $label2 = $labels->getArrayObject()->offsetGet(1);
+        $this->assertEquals(1, $label1->getId());
+        $this->assertEquals(4, $label2->getId());
+    }
+
     public function testFindOne(): void
     {
         $label = $this->getStorage()->findOne();
