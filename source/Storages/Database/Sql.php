@@ -13,15 +13,14 @@ use PDO;
 use function array_map;
 use function implode;
 use function intval;
-use function json_decode;
 
 class Sql implements Database
 {
     /** @var string */
-    private const FIELD_ASCENDANT_ID = 'ascendants_id';
+    private const FIELD_ID = 'id';
 
     /** @var string */
-    private const FIELD_ID = 'id';
+    private const FIELD_PARENT_ID = 'parent_id';
 
     /** @var string */
     private const FIELD_SLUG = 'slug';
@@ -59,17 +58,17 @@ class Sql implements Database
         return $this;
     }
 
-    public function addFilterByAscendantId(string $operator, string ...$ids): Storage
-    {
-        $ids = array_map('intval', $ids);
-        $this->addFilter(self::FIELD_ASCENDANT_ID, PDO::PARAM_INT, $operator, ...$ids);
-        return $this;
-    }
-
     public function addFilterById(string $operator, string ...$ids): Storage
     {
         $ids = array_map('intval', $ids);
         $this->addFilter(self::FIELD_ID, PDO::PARAM_INT, $operator, ...$ids);
+        return $this;
+    }
+
+    public function addFilterByParentId(string $operator, string ...$ids): Storage
+    {
+        $ids = array_map('intval', $ids);
+        $this->addFilter(self::FIELD_PARENT_ID, PDO::PARAM_INT, $operator, ...$ids);
         return $this;
     }
 
@@ -102,13 +101,8 @@ class Sql implements Database
             new Status((int) $data[self::FIELD_STATUS])
         );
 
-        $label->setId($data[self::FIELD_ID]);
-
-        $ascendantsId = $data[self::FIELD_ASCENDANT_ID];
-
-        if ($ascendantsId != null) {
-            $label->setAscendantsId(json_decode($ascendantsId));
-        }
+        $label->setId($data[self::FIELD_ID])
+        ->setParentId((string) $data[self::FIELD_PARENT_ID]);
 
         return $label;
     }
@@ -195,8 +189,8 @@ class Sql implements Database
     private function getFields(): array
     {
         return [
-            self::FIELD_ASCENDANT_ID,
             self::FIELD_ID,
+            self::FIELD_PARENT_ID,
             self::FIELD_SLUG,
             self::FIELD_STATUS,
             self::FIELD_TITLE,
@@ -238,20 +232,20 @@ class Sql implements Database
     /** @throws Exception */
     public function store(Label $label): Storage
     {
-        $fieldAscendantId = self::FIELD_ASCENDANT_ID;
+        $fieldParentId = self::FIELD_PARENT_ID;
         $fieldSlug = self::FIELD_SLUG;
         $fieldTitle = self::FIELD_TITLE;
         $fieldStatus = self::FIELD_STATUS;
 
         $statement = $this->pdo->prepare(
             "INSERT INTO {$this->table} (
-                `{$fieldTitle}`, `{$fieldSlug}`, `{$fieldAscendantId}`, `{$fieldStatus}`
+                `{$fieldTitle}`, `{$fieldSlug}`, `{$fieldParentId}`, `{$fieldStatus}`
             ) VALUES (
-                :title, :slug, :ascendant_id, :status
+                :title, :slug, :parent_id, :status
             )"
         );
 
-        $statement->bindValue(':ascendant_id', json_encode($label->getAscendantsId()), PDO::PARAM_STR);
+        $statement->bindValue(':parent_id', $label->getParentId(), PDO::PARAM_INT);
         $statement->bindValue(':slug', $label->getSlug(), PDO::PARAM_STR);
         $statement->bindValue(':title', $label->getTitle(), PDO::PARAM_STR);
         $statement->bindValue(':status', $label->getStatus()->getValue(), PDO::PARAM_INT);

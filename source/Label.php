@@ -3,17 +3,13 @@ namespace Ciebit\Labels;
 
 use Ciebit\Labels\Status;
 
-use function array_map;
-use function end;
-use function strval;
-
 class Label
 {
-    /** @var array <string> */
-    private $ascendantsId;
-
     /** @var string */
     private $id;
+
+    /** @var string */
+    private $parentId;
 
     /** @var string */
     private $slug;
@@ -29,16 +25,11 @@ class Label
         string $slug,
         Status $status
     ) {
-        $this->ascendantsId = [];
         $this->id = '';
+        $this->parentId = '';
         $this->title = $title;
         $this->slug = $slug;
         $this->status = $status;
-    }
-
-    public function getAscendantsId(): array
-    {
-        return $this->ascendantsId;
     }
 
     public function getId(): string
@@ -58,7 +49,7 @@ class Label
 
     public function getParentId(): string
     {
-        return end($this->ascendantsId);
+        return $this->parentId;
     }
 
     public function getStatus(): Status
@@ -66,16 +57,15 @@ class Label
         return $this->status;
     }
 
-    public function setAscendantsId(array $ids): self
-    {
-        $ids = array_map('strval', $ids);
-        $this->ascendantsId = $ids;
-        return $this;
-    }
-
     public function setId(string $id): self
     {
         $this->id = $id;
+        return $this;
+    }
+
+    public function setParentId(string $id): self
+    {
+        $this->parentId = $id;
         return $this;
     }
 }

@@ -7,9 +7,9 @@ use Ciebit\Labels\Status;
 
 interface Storage
 {
-    public function addFilterByAscendantId(string $operator, string ...$id): self;
-
     public function addFilterById(string $operator, string ...$id): self;
+
+    public function addFilterByParentId(string $operator, string ...$id): self;
 
     public function addFilterBySlug(string $operator, string ...$slug): self;
 

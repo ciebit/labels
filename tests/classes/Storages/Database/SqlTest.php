@@ -9,6 +9,8 @@ use Ciebit\Labels\Tests\BuildPdo;
 use Ciebit\Labels\Tests\LabelTest;
 use PHPUnit\Framework\TestCase;
 
+use function file_get_contents;
+
 class SqlTest extends TestCase
 {
     private function getStorage(): Sql

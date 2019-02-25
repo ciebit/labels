@@ -12,8 +12,8 @@ class LabelTest extends TestCase
     /** @var string */
     public const ID = '3';
 
-    /** @var array <string> */
-    public const ASCENDANTS_ID = ['1', '2'];
+    /** @var string */
+    public const PARENT_ID = '2';
 
     /** @var int */
     public const STATUS = 3;
@@ -31,19 +31,16 @@ class LabelTest extends TestCase
             self::SLUG,
             new Status(self::STATUS)
         ))->setId(self::ID)
-        ->setAscendantsId(self::ASCENDANTS_ID);
+        ->setParentId(self::PARENT_ID);
     }
 
     public function testCreateFromManual(): void
     {
         $label = self::getLabel();
-        $ascendantsId = self::ASCENDANTS_ID;
-
         $this->assertEquals(self::ID, $label->getId());
         $this->assertEquals(self::TITLE, $label->getTitle());
         $this->assertEquals(self::SLUG, $label->getSlug());
         $this->assertEquals(self::STATUS, $label->getStatus()->getValue());
-        $this->assertEquals(self::ASCENDANTS_ID, $label->getAscendantsId());
-        $this->assertEquals(end($ascendantsId), $label->getParentId());
+        $this->assertEquals(self::PARENT_ID, $label->getParentId());
     }
 }
