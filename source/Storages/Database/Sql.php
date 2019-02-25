@@ -17,19 +17,19 @@ use function intval;
 class Sql implements Database
 {
     /** @var string */
-    private const FIELD_ID = 'id';
+    private const COLUMN_ID = 'id';
 
     /** @var string */
-    private const FIELD_PARENT_ID = 'parent_id';
+    private const COLUMN_PARENT_ID = 'parent_id';
 
     /** @var string */
-    private const FIELD_SLUG = 'slug';
+    private const COLUMN_SLUG = 'slug';
 
     /** @var string */
-    private const FIELD_STATUS = 'status';
+    private const COLUMN_STATUS = 'status';
 
     /** @var string */
-    private const FIELD_TITLE = 'title';
+    private const COLUMN_TITLE = 'title';
 
     /** @var PDO */
     private $pdo;
@@ -61,20 +61,20 @@ class Sql implements Database
     public function addFilterById(string $operator, string ...$ids): Storage
     {
         $ids = array_map('intval', $ids);
-        $this->addFilter(self::FIELD_ID, PDO::PARAM_INT, $operator, ...$ids);
+        $this->addFilter(self::COLUMN_ID, PDO::PARAM_INT, $operator, ...$ids);
         return $this;
     }
 
     public function addFilterByParentId(string $operator, string ...$ids): Storage
     {
         $ids = array_map('intval', $ids);
-        $this->addFilter(self::FIELD_PARENT_ID, PDO::PARAM_INT, $operator, ...$ids);
+        $this->addFilter(self::COLUMN_PARENT_ID, PDO::PARAM_INT, $operator, ...$ids);
         return $this;
     }
 
     public function addFilterBySlug(string $operator, string ...$slug): Storage
     {
-        $this->addFilter(self::FIELD_SLUG, PDO::PARAM_STR, $operator, ...$slug);
+        $this->addFilter(self::COLUMN_SLUG, PDO::PARAM_STR, $operator, ...$slug);
         return $this;
     }
 
@@ -83,26 +83,32 @@ class Sql implements Database
         $statusInt = array_map(function($status){
             return (int) $status->getValue();
         }, $status);
-        $this->addFilter(self::FIELD_STATUS, PDO::PARAM_INT, $operator, ...$statusInt);
+        $this->addFilter(self::COLUMN_STATUS, PDO::PARAM_INT, $operator, ...$statusInt);
         return $this;
     }
 
     public function addFilterByTitle(string $operator, string ...$titles): Storage
     {
-        $this->addFilter(self::FIELD_TITLE, PDO::PARAM_STR, $operator, ...$titles);
+        $this->addFilter(self::COLUMN_TITLE, PDO::PARAM_STR, $operator, ...$titles);
+        return $this;
+    }
+
+    public function addOrder(string $field, string $order = 'ASC'): Storage
+    {
+        $this->sqlHelper->addOrderBy($field, $order);
         return $this;
     }
 
     private function build(array $data): Label
     {
         $label = new Label(
-            $data[self::FIELD_TITLE],
-            $data[self::FIELD_SLUG],
-            new Status((int) $data[self::FIELD_STATUS])
+            $data[self::COLUMN_TITLE],
+            $data[self::COLUMN_SLUG],
+            new Status((int) $data[self::COLUMN_STATUS])
         );
 
-        $label->setId($data[self::FIELD_ID])
-        ->setParentId((string) $data[self::FIELD_PARENT_ID]);
+        $label->setId($data[self::COLUMN_ID])
+        ->setParentId((string) $data[self::COLUMN_PARENT_ID]);
 
         return $label;
     }
@@ -189,11 +195,11 @@ class Sql implements Database
     private function getFields(): array
     {
         return [
-            self::FIELD_ID,
-            self::FIELD_PARENT_ID,
-            self::FIELD_SLUG,
-            self::FIELD_STATUS,
-            self::FIELD_TITLE,
+            self::COLUMN_ID,
+            self::COLUMN_PARENT_ID,
+            self::COLUMN_SLUG,
+            self::COLUMN_STATUS,
+            self::COLUMN_TITLE,
         ];
     }
 
@@ -232,10 +238,10 @@ class Sql implements Database
     /** @throws Exception */
     public function store(Label $label): Storage
     {
-        $fieldParentId = self::FIELD_PARENT_ID;
-        $fieldSlug = self::FIELD_SLUG;
-        $fieldTitle = self::FIELD_TITLE;
-        $fieldStatus = self::FIELD_STATUS;
+        $fieldParentId = self::COLUMN_PARENT_ID;
+        $fieldSlug = self::COLUMN_SLUG;
+        $fieldTitle = self::COLUMN_TITLE;
+        $fieldStatus = self::COLUMN_STATUS;
 
         $statement = $this->pdo->prepare(
             "INSERT INTO {$this->table} (
@@ -262,11 +268,11 @@ class Sql implements Database
     /** @throws Exception */
     public function update(Label $label): Storage
     {
-        $fieldParentId = self::FIELD_PARENT_ID;
-        $fieldId = self::FIELD_ID;
-        $fieldSlug = self::FIELD_SLUG;
-        $fieldTitle = self::FIELD_TITLE;
-        $fieldStatus = self::FIELD_STATUS;
+        $fieldParentId = self::COLUMN_PARENT_ID;
+        $fieldId = self::COLUMN_ID;
+        $fieldSlug = self::COLUMN_SLUG;
+        $fieldTitle = self::COLUMN_TITLE;
+        $fieldStatus = self::COLUMN_STATUS;
 
         $statement = $this->pdo->prepare(
             "UPDATE {$this->table} SET

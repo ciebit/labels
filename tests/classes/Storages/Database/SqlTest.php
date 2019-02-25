@@ -4,6 +4,7 @@ namespace Ciebit\Labels\Tests\Storages\Database;
 use Ciebit\Labels\Collection;
 use Ciebit\Labels\Label;
 use Ciebit\Labels\Status;
+use Ciebit\Labels\Storages\Storage;
 use Ciebit\Labels\Storages\Database\Sql;
 use Ciebit\Labels\Tests\BuildPdo;
 use Ciebit\Labels\Tests\LabelTest;
@@ -36,12 +37,6 @@ class SqlTest extends TestCase
         $this->assertNull($label);
     }
 
-    public function testFind(): void
-    {
-        $label = $this->getStorage()->findOne();
-        $this->assertInstanceOf(Label::class, $label);
-    }
-
     public function testFindAll(): void
     {
         $this->setDatabaseDefault();
@@ -61,25 +56,7 @@ class SqlTest extends TestCase
         $this->assertEquals($id, $labels->getArrayObject()->offsetGet(0)->getId());
     }
 
-    public function testFindAllFilterByStatus(): void
-    {
-        $storage = $this->getStorage();
-        $storage->addFilterByStatus('=', Status::ACTIVE());
-        $labels = $storage->findAll();
-        $this->assertCount(2, $labels);
-        $this->assertEquals(Status::ACTIVE(), $labels->getArrayObject()->offsetGet(0)->getStatus());
-    }
-
-    public function testFindFilterById(): void
-    {
-        $id = 2;
-        $storage = $this->getStorage();
-        $storage->addFilterById('=', $id+0);
-        $label = $storage->findOne();
-        $this->assertEquals($id, $label->getId());
-    }
-
-    public function testGetFilterByMultipleIds(): void
+    public function testFindAllFilterByMultipleIds(): void
     {
         $storage = $this->getStorage();
         $storage->addFilterById('=', ...[2,3,4]);
@@ -91,7 +68,49 @@ class SqlTest extends TestCase
         $this->assertEquals(4, $labelsArray->offsetGet(2)->getId());
     }
 
-    public function testFindFilterByStatus(): void
+    public function testFindAllFilterByStatus(): void
+    {
+        $storage = $this->getStorage();
+        $storage->addFilterByStatus('=', Status::ACTIVE());
+        $labels = $storage->findAll();
+        $this->assertCount(2, $labels);
+        $this->assertEquals(Status::ACTIVE(), $labels->getArrayObject()->offsetGet(0)->getStatus());
+    }
+
+    public function testFindAllOrder(): void
+    {
+        $this->setDatabaseDefault();
+        $sql = $this->getStorage();
+        $labels = $sql->addOrder(Storage::FIELD_TITLE, 'DESC')->findAll();
+        $label = $labels->getArrayObject()->offsetGet(0);
+        $this->assertEquals(5, $label->getId());
+    }
+
+    public function testFindOne(): void
+    {
+        $label = $this->getStorage()->findOne();
+        $this->assertInstanceOf(Label::class, $label);
+    }
+
+    public function testFindOneFilterById(): void
+    {
+        $id = 2;
+        $storage = $this->getStorage();
+        $storage->addFilterById('=', $id+0);
+        $label = $storage->findOne();
+        $this->assertEquals($id, $label->getId());
+    }
+
+    public function testFindOneFilterBySlug(): void
+    {
+        $slug = 'relatorios';
+        $storage = $this->getStorage();
+        $storage->addFilterBySlug('=', $slug.'');
+        $label = $storage->findOne();
+        $this->assertEquals($slug, $label->getSlug());
+    }
+
+    public function testFindOneFilterByStatus(): void
     {
         $sql = $this->getStorage();
         $sql->addFilterByStatus('=', Status::ACTIVE());
@@ -99,13 +118,12 @@ class SqlTest extends TestCase
         $this->assertEquals(Status::ACTIVE(), $label->getStatus());
     }
 
-    public function testFindFilterBySlug(): void
+    public function testFindOneOrder(): void
     {
-        $slug = 'relatorios';
-        $storage = $this->getStorage();
-        $storage->addFilterBySlug('=', $slug.'');
-        $label = $storage->findOne();
-        $this->assertEquals($slug, $label->getSlug());
+        $this->setDatabaseDefault();
+        $sql = $this->getStorage();
+        $label = $sql->addOrder(Storage::FIELD_TITLE, 'DESC')->findOne();
+        $this->assertEquals(5, $label->getId());
     }
 
     public function testStore(): void
