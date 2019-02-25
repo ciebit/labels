@@ -41,14 +41,14 @@ class Sql implements Database
     private $table;
 
     /** @var int */
-    private $totalItemsOfLastFindWithoutFilters;
+    private $totalItemsOfLastFindWithoutLimit;
 
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
         $this->sqlHelper = new SqlHelper;
         $this->table = 'cb_labels';
-        $this->totalItemsOfLastFindWithoutFilters = 0;
+        $this->totalItemsOfLastFindWithoutLimit = 0;
     }
 
     private function addFilter(string $fieldName, int $type, string $operator, ...$value): self
@@ -212,9 +212,9 @@ class Sql implements Database
         );
     }
 
-    public function getTotalItemsOfLastFindWithoutFilters(): int
+    public function getTotalItemsOfLastFindWithoutLimit(): int
     {
-        return $this->totalItemsOfLastFindWithoutFilters;
+        return $this->totalItemsOfLastFindWithoutLimit;
     }
 
     public function setLimit(int $limit): Storage
@@ -300,7 +300,7 @@ class Sql implements Database
 
     private function updateTotalItemsWithoutFilters(): self
     {
-        $this->totalItemsOfLastFindWithoutFilters = $this->pdo->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $this->totalItemsOfLastFindWithoutLimit = $this->pdo->query('SELECT FOUND_ROWS()')->fetchColumn();
         return $this;
     }
 }

@@ -116,6 +116,15 @@ class SqlTest extends TestCase
         $this->assertEquals(4, $label2->getId());
     }
 
+    public function testFindOneAllTotalItemsOfLastFindWithoutLimit(): void
+    {
+        $this->setDatabaseDefault();
+        $sql = $this->getStorage();
+        $labels = $sql->addFilterByParentId('=', 1)->setLimit(1)->findAll();
+        $this->assertCount(1, $labels);
+        $this->assertEquals(3, $sql->getTotalItemsOfLastFindWithoutLimit());
+    }
+
     public function testFindOne(): void
     {
         $label = $this->getStorage()->findOne();

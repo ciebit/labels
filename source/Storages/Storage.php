@@ -36,7 +36,7 @@ interface Storage
 
     public function destroy(Label $label): self;
 
-    public function getTotalItemsOfLastFindWithoutFilters(): int;
+    public function getTotalItemsOfLastFindWithoutLimit(): int;
 
     public function findAll(): Collection;
 
