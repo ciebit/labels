@@ -77,6 +77,23 @@ class SqlTest extends TestCase
         $this->assertEquals(Status::ACTIVE(), $labels->getArrayObject()->offsetGet(0)->getStatus());
     }
 
+    public function testFindAllLimit(): void
+    {
+        $this->setDatabaseDefault();
+        $sql = $this->getStorage();
+        $labels = $sql->setLimit(2)->findAll();
+        $this->assertCount(2, $labels);
+    }
+
+    public function testFindAllOffset(): void
+    {
+        $this->setDatabaseDefault();
+        $sql = $this->getStorage();
+        $labels = $sql->setLimit(1)->setOffset(2)->findAll();
+        $label = $labels->getArrayObject()->offsetGet(0);
+        $this->assertEquals(3, $label->getId());
+    }
+
     public function testFindAllOrder(): void
     {
         $this->setDatabaseDefault();
