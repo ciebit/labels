@@ -56,6 +56,18 @@ class SqlTest extends TestCase
         $this->assertEquals($id, $labels->getArrayObject()->offsetGet(0)->getId());
     }
 
+    public function testIsolation(): void
+    {
+        $id = 3;
+        $storage1 = $this->getStorage();
+        $storage2 = clone $storage1;
+        $storage1->addFilterBySlug('=', 'test');
+        $storage2->addFilterById('=', $id+0);
+        $labels = $storage2->findAll();
+        $this->assertCount(1, $labels->getIterator());
+        $this->assertEquals($id, $labels->getArrayObject()->offsetGet(0)->getId());
+    }
+
     public function testFindAllFilterByMultipleIds(): void
     {
         $storage = $this->getStorage();
