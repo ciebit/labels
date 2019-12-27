@@ -2,8 +2,9 @@
 namespace Ciebit\Labels;
 
 use Ciebit\Labels\Status;
+use JsonSerializable;
 
-class Label
+class Label implements JsonSerializable
 {
     /** @var string */
     private $id;
@@ -55,6 +56,17 @@ class Label
     public function getStatus(): Status
     {
         return $this->status;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'parentId' => $this->getParentId(),
+            'slug' => $this->getSlug(),
+            'status' => $this->getStatus(),
+            'title' => $this->getTitle(),
+        ];
     }
 
     public function setId(string $id): self

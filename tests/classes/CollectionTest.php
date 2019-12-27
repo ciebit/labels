@@ -28,4 +28,24 @@ class CollectionTest extends TestCase
         $collection->getArrayObject()->append('test');
         $this->assertEquals(2, $collection->count());
     }
+
+    public function testJsonSerialize(): void
+    {
+        $collection = new Collection;
+        $collection->add(
+            new Label('Tests 1', 'test-1', Status::ACTIVE()),
+            new Label('Tests 2', 'test-2', Status::ACTIVE()),
+            new Label('Tests 3', 'test-3', Status::ACTIVE())
+        );
+        $json = json_encode($collection);
+
+        $this->assertJson($json);
+
+        $data = json_decode($json);
+        $this->assertCount(3, $data);
+        $this->assertEquals(
+            $collection->getArrayObject()->offsetGet(0)->getTitle(), 
+            $data[0]->title
+        );
+    }
 }

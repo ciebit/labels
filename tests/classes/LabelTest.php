@@ -43,4 +43,19 @@ class LabelTest extends TestCase
         $this->assertEquals(self::STATUS, $label->getStatus()->getValue());
         $this->assertEquals(self::PARENT_ID, $label->getParentId());
     }
+
+    public function testJsonSerialize(): void
+    {
+        $label = self::getLabel();
+        $json = json_encode($label);
+
+        $this->assertJson($json);
+
+        $data = json_decode($json);
+        $this->assertEquals($label->getId(), $data->id);
+        $this->assertEquals($label->getTitle(), $data->title);
+        $this->assertEquals($label->getSlug(), $data->slug);
+        $this->assertEquals($label->getStatus()->getValue(), $data->status);
+        $this->assertEquals($label->getParentId(), $data->parentId);
+    }
 }
