@@ -5,8 +5,9 @@ use ArrayIterator;
 use ArrayObject;
 use Countable;
 use IteratorAggregate;
+use JsonSerializable;
 
-class Collection implements Countable, IteratorAggregate
+class Collection implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var ArrayObject */
     private $labels;
@@ -48,5 +49,10 @@ class Collection implements Countable, IteratorAggregate
     public function getIterator(): ArrayIterator
     {
         return $this->labels->getIterator();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->getArrayObject()->getArrayCopy();
     }
 }
